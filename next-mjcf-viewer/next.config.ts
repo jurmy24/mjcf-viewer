@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       ...config.resolve.alias,
       "three/addons": "./node_modules/three/examples/jsm",
     };
+
     // Handle WASM files
     config.experiments = {
       ...config.experiments,
