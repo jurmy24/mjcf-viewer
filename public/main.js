@@ -22,7 +22,7 @@ mujoco.FS.mkdir("/working");
 mujoco.FS.mount(mujoco.MEMFS, { root: "." }, "/working");
 mujoco.FS.writeFile(
   "/working/" + initialScene,
-  await (await fetch("./examples/scenes/" + initialScene)).text()
+  await (await fetch("./public/examples/scenes/" + initialScene)).text()
 );
 
 export class MuJoCoDemo {
