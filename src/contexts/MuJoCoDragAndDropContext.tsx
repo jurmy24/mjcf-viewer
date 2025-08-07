@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  createContext,
-  useState,
-  ReactNode,
-  useCallback,
-  useRef,
-} from "react";
+import React, { createContext, useState, ReactNode, useCallback } from "react";
 
 export type MuJoCoDragAndDropContextType = {
   isDragging: boolean;
