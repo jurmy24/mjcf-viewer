@@ -385,3 +385,78 @@ export class MuJoCoDemo {
 
 let demo = new MuJoCoDemo();
 await demo.init();
+
+// Set up message handling for parent-iframe communication
+window.addEventListener("message", async (event) => {
+  console.log("📨 Received message in iframe:", event.data);
+
+  try {
+    switch (event.data.type) {
+      case "LOAD_SCENE":
+        console.log("🔄 Loading scene:", event.data.sceneName);
+
+        // Clear the existing scene
+        const existingRoot = demo.scene.getObjectByName("MuJoCo Root");
+        if (existingRoot) {
+          demo.scene.remove(existingRoot);
+        }
+
+        // Reload the scene with the new XML file
+        [demo.model, demo.state, demo.simulation, demo.bodies, demo.lights] =
+          await loadSceneFromURL(mujoco, event.data.sceneName, demo);
+
+        // Notify parent that scene was loaded
+        window.parent.postMessage(
+          {
+            type: "SCENE_LOADED",
+            sceneName: event.data.sceneName,
+          },
+          "*"
+        );
+        break;
+
+      case "LOAD_XML_CONTENT":
+        console.log("🔄 Loading XML content:", event.data.fileName);
+
+        // Clear the existing scene
+        const existingRoot2 = demo.scene.getObjectByName("MuJoCo Root");
+        if (existingRoot2) {
+          demo.scene.remove(existingRoot2);
+        }
+
+        // Write the XML content to MuJoCo's virtual file system
+        mujoco.FS.writeFile(
+          "/working/" + event.data.fileName,
+          event.data.content
+        );
+
+        // Load the scene with the new XML content
+        [demo.model, demo.state, demo.simulation, demo.bodies, demo.lights] =
+          await loadSceneFromURL(mujoco, event.data.fileName, demo);
+
+        // Notify parent that scene was loaded
+        window.parent.postMessage(
+          {
+            type: "SCENE_LOADED",
+            sceneName: event.data.fileName,
+          },
+          "*"
+        );
+        break;
+
+      default:
+        console.log("📨 Unknown message type:", event.data.type);
+    }
+  } catch (error) {
+    console.error("❌ Error handling message:", error);
+
+    // Notify parent of error
+    window.parent.postMessage(
+      {
+        type: "ERROR",
+        error: error.message,
+      },
+      "*"
+    );
+  }
+});
