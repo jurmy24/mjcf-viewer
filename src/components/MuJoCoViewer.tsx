@@ -22,6 +22,8 @@ export function MuJoCoViewer() {
       <iframe
         ref={iframeRef}
         src="/mujoco-demo.html"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads"
+        allow="accelerometer; camera; encrypted-media; geolocation; gyroscope; microphone; midi; clipboard-read; clipboard-write"
         style={{
           position: "absolute",
           top: 0,
@@ -33,6 +35,9 @@ export function MuJoCoViewer() {
           border: "none",
           display: "block",
         }}
+        title="MuJoCo Physics Viewer"
+        loading="lazy"
+        referrerPolicy="no-referrer"
       />
     </div>
   );
