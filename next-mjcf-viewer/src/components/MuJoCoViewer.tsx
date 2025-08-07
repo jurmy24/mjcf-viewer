@@ -1,46 +1,41 @@
 "use client";
-
 import { useEffect, useRef } from "react";
-import { MuJoCoDemo } from "@/lib/mujoco-demo";
 
 export function MuJoCoViewer() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const demoRef = useRef<MuJoCoDemo | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current || demoRef.current) return;
+    const iframe = iframeRef.current;
+    if (!iframe) return;
 
-    const initDemo = async () => {
-      try {
-        demoRef.current = new MuJoCoDemo(containerRef.current!);
-        await demoRef.current.init();
-      } catch (error) {
-        console.error("Failed to initialize MuJoCo demo:", error);
-      }
+    iframe.onload = () => {
+      console.log("🎬 Iframe loaded successfully");
     };
 
-    initDemo();
-
-    // Cleanup on unmount
-    return () => {
-      if (demoRef.current) {
-        demoRef.current.dispose();
-        demoRef.current = null;
-      }
+    iframe.onerror = (error) => {
+      console.error("❌ Iframe failed to load:", error);
     };
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        margin: 0,
-        touchAction: "none",
-        userSelect: "none",
-      }}
-    />
+    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+      <iframe
+        ref={iframeRef}
+        src="/mujoco-demo.html"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          margin: 0,
+          padding: 0,
+          border: "none",
+          display: "block",
+        }}
+      />
+    </div>
   );
 }
+
+export default MuJoCoViewer;
