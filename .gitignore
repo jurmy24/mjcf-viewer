@@ -1,80 +1,41 @@
-# Compiled Object files
-**/.DS_Store
-*.slo
-*.lo
-*.o
-*.pyc
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Precompiled Headers
-*.gch
-*.pch
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# testing
+/coverage
 
-# Fortran module files
-*.mod
-*.smod
+# next.js
+/.next/
+/out/
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# production
+/build
 
-# Executables
-*.exe
-*.out
-*.app
+# misc
+.DS_Store
+*.pem
 
-**/cmake-build-debug
-**/CMakeCache.txt
-**/cmake_install.cmake
-**/install_manifest.txt
-**/CMakeFiles/
-**/CTestTestfile.cmake
-**/Makefile
-**/*.cbp
-**/CMakeScripts
-**/compile_commands.json
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-include/divisible/*
+# env files (can opt-in for committing if needed)
+.env*
 
+# vercel
+.vercel
 
-## Local 
-
-.idea/*.xml
-
-build/**/*
-
-include/*
-lib/*
-bin/*
-test/test_runner
-.vscode
-.cache
-.fiveserverrc
-
-# Dependency directories
-node_modules/**/*
-jspm_packages/
-
-# Three.js Build
-!node_modules/three/
-!node_modules/three/*/
-!node_modules/three/build/*
-# Three.js Controls
-!node_modules/three/examples/*/
-!node_modules/three/examples/jsm/
-!node_modules/three/examples/jsm/*/
-!node_modules/three/examples/jsm/controls/
-!node_modules/three/examples/jsm/controls/OrbitControls.js
-!node_modules/three/examples/jsm/controls/DragControls.js
-!node_modules/three/examples/jsm/libs/
-!node_modules/three/examples/jsm/libs/lil-gui.module.min.js
-#!node_modules/three/examples/jsm/utils/
-#!node_modules/three/examples/jsm/utils/*
-#!node_modules/three/examples/jsm/loaders/
-#!node_modules/three/examples/jsm/loaders/*
+# typescript
+*.tsbuildinfo
+next-env.d.ts

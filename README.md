@@ -1,76 +1,36 @@
-<p align="center">
-  <a href="https://zalo.github.io/mujoco_wasm/"><img src="./examples/MuJoCoWasmLogo.png" href></a>
-</p>
-<p align="left">
-  <a href="https://github.com/zalo/mujoco_wasm/deployments/activity_log?environment=github-pages">
-      <img src="https://img.shields.io/github/deployments/zalo/mujoco_wasm/github-pages?label=Github%20Pages%20Deployment" title="Github Pages Deployment"></a>
-  <!--<a href="https://github.com/zalo/mujoco_wasm/deployments/activity_log?environment=Production">
-      <img src="https://img.shields.io/github/deployments/zalo/mujoco_wasm/Production?label=Vercel%20Deployment" title="Vercel Deployment"></a> -->
-  <!--<a href="https://lgtm.com/projects/g/zalo/mujoco_wasm/context:javascript">
-      <img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/zalo/mujoco_wasm.svg?logo=lgtm&logoWidth=18"/></a> -->
-  <a href="https://github.com/zalo/mujoco_wasm/commits/main">
-      <img src="https://img.shields.io/github/last-commit/zalo/mujoco_wasm" title="Last Commit Date"></a>
-  <a href="https://github.com/zalo/mujoco_wasm/blob/main/LICENSE">
-      <img src="https://img.shields.io/badge/license-MIT-brightgreen" title="License: MIT"></a>
-</p>
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## The Power of MuJoCo in your Browser.
+## Getting Started
 
-Load and Run MuJoCo 2.3.1 Models using JavaScript and WebAssembly.
+First, run the development server:
 
-This repo is a fork of @stillonearth 's starter repository, adding tons of functionality and a comprehensive example scene.
-
-### [See the Live Demo Here](https://zalo.github.io/mujoco_wasm/)
-
-### [See a more Advanced Example Here](https://kzakka.com/robopianist/)
-
-## Building
-
-**1. Install emscripten**
-
-**2. Autogenerate the bindings by running src/parse_mjxmacro.py**
-
-**3. Build the mujoco_wasm Binary**
-
-On Linux, use:
 ```bash
-mkdir build
-cd build
-emcmake cmake ..
-make
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-On Windows, run `build_windows.bat`.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-An older version of Emscripten (<3.1.56) may be necessary.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-*4. (Optional) Update MuJoCo libs*
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Build MuJoCo libs with wasm target and place to lib. Currently v2.3.1 included.
+## Learn More
 
-## JavaScript API
+To learn more about Next.js, take a look at the following resources:
 
-```javascript
-import load_mujoco from "./mujoco_wasm.js";
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-// Load the MuJoCo Module
-const mujoco = await load_mujoco();
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-// Set up Emscripten's Virtual File System
-mujoco.FS.mkdir('/working');
-mujoco.FS.mount(mujoco.MEMFS, { root: '.' }, '/working');
-mujoco.FS.writeFile("/working/humanoid.xml", await (await fetch("./examples/scenes/humanoid.xml")).text());
+## Deploy on Vercel
 
-// Load in the state from XML
-let model       = new mujoco.Model("/working/humanoid.xml");
-let state       = new mujoco.State(model);
-let simulation  = new mujoco.Simulation(model, state);
-```
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Typescript definitions are available.
-
-## Work In Progress Disclaimer
-
-So far, most mjModel and mjData state variables and functions (that do not require custom structs) are exposed.
-
-At some point, I'd like to de-opinionate the binding and make it match the original MuJoCo API better.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

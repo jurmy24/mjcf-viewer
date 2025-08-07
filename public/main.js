@@ -1,6 +1,7 @@
 import * as THREE from "three";
-import { GUI } from "../node_modules/three/examples/jsm/libs/lil-gui.module.min.js";
-import { OrbitControls } from "../node_modules/three/examples/jsm/controls/OrbitControls.js";
+import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
 import { DragStateManager } from "./utils/DragStateManager.js";
 import {
   setupGUI,
@@ -11,7 +12,7 @@ import {
   toMujocoPos,
   standardNormal,
 } from "./mujocoUtils.js";
-import load_mujoco from "../dist/mujoco_wasm.js";
+import load_mujoco from "./wasm/mujoco_wasm.js";
 
 // Load the MuJoCo Module
 const mujoco = await load_mujoco();
@@ -22,13 +23,12 @@ mujoco.FS.mkdir("/working");
 mujoco.FS.mount(mujoco.MEMFS, { root: "." }, "/working");
 mujoco.FS.writeFile(
   "/working/" + initialScene,
-  await (await fetch("./public/examples/scenes/" + initialScene)).text()
+  await (await fetch("./examples/" + initialScene)).text()
 );
 
 export class MuJoCoDemo {
   constructor() {
     this.mujoco = mujoco;
-
     // Load in the state from XML
     this.model = new mujoco.Model("/working/" + initialScene);
     this.state = new mujoco.State(this.model);
@@ -103,39 +103,52 @@ export class MuJoCoDemo {
   }
 
   async init() {
-    // Download the the examples to MuJoCo's virtual file system
-    await downloadExampleScenesFolder(mujoco);
+    try {
+      // Download the the examples to MuJoCo's virtual file system
+      await downloadExampleScenesFolder(mujoco);
 
-    // Initialize the three.js Scene using the .xml Model in initialScene
-    [this.model, this.state, this.simulation, this.bodies, this.lights] =
-      await loadSceneFromURL(mujoco, initialScene, this);
+      // Initialize the three.js Scene using the .xml Model in initialScene
+      [this.model, this.state, this.simulation, this.bodies, this.lights] =
+        await loadSceneFromURL(mujoco, initialScene, this);
 
-    this.scene.background = new THREE.Color(0xeeeeee);
+      this.scene.background = new THREE.Color(0xeeeeee);
 
-    // Change the color and material properties of the mesh floor after loading the scene
-    // Find the MuJoCo Root group
-    const mujocoRoot = this.scene.getObjectByName("MuJoCo Root");
-    if (mujocoRoot) {
-      mujocoRoot.traverse((obj) => {
-        // Check for Reflector (custom floor) or PlaneGeometry (fallback)
-        if (
-          obj.isMesh &&
-          (obj.geometry?.type === "PlaneGeometry" ||
-            obj.constructor.name === "Reflector")
-        ) {
-          if (obj.material && obj.material.color) {
-            obj.material.color.set(0xdddddd); // Set to light gray
-            obj.material.map = null; // Remove checkerboard texture
-            obj.material.reflectivity = 0; // Matte
-            obj.material.metalness = 0; // Matte
-            obj.material.needsUpdate = true;
+      // Change the color and material properties of the mesh floor after loading the scene
+      // Find the MuJoCo Root group
+      const mujocoRoot = this.scene.getObjectByName("MuJoCo Root");
+
+      if (mujocoRoot) {
+        let meshCount = 0;
+        let floorModified = false;
+
+        mujocoRoot.traverse((obj) => {
+          if (obj.isMesh) {
+            meshCount++;
+
+            // Check for Reflector (custom floor) or PlaneGeometry (fallback)
+            if (
+              obj.geometry?.type === "PlaneGeometry" ||
+              obj.constructor.name === "Reflector"
+            ) {
+              if (obj.material && obj.material.color) {
+                obj.material.color.set(0xdddddd); // Set to light gray
+                obj.material.map = null; // Remove checkerboard texture
+                obj.material.reflectivity = 0; // Matte
+                obj.material.metalness = 0; // Matte
+                obj.material.needsUpdate = true;
+                floorModified = true;
+              }
+            }
           }
-        }
-      });
-    }
+        });
+      }
 
-    this.gui = new GUI();
-    setupGUI(this);
+      this.gui = new GUI();
+      setupGUI(this);
+    } catch (error) {
+      console.error("❌ Error in init() method:", error);
+      console.error("Stack trace:", error.stack);
+    }
   }
 
   onWindowResize() {
